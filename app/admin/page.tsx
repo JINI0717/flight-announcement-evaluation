@@ -1,4 +1,5 @@
 import { AdminSessionManager } from "@/components/admin-session-manager"
+import { TestAudioGenerator } from "@/components/test-audio-generator"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 export default function AdminHomePage() {
@@ -13,6 +14,7 @@ export default function AdminHomePage() {
         </CardContent>
       </Card>
 
+      <TestAudioGenerator />
       <AdminSessionManager />
     </div>
   )

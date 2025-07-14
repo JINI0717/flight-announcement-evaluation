@@ -35,12 +35,30 @@ export function AdminSessionManager() {
   const [sessions, setSessions] = useState<Session[]>([])
   const [uploading, setUploading] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [adminEvaluatorId, setAdminEvaluatorId] = useState<string | null>(null) // 관리자 ID 상태 추가
   const { toast } = useToast()
 
   useEffect(() => {
+    fetchAdminEvaluatorId() // 관리자 ID 가져오기
     fetchAudioFiles()
     fetchSessions()
   }, [])
+
+  const fetchAdminEvaluatorId = async () => {
+    try {
+      const { data, error } = await supabase.from("evaluators").select("id").eq("is_admin", true).limit(1).single()
+
+      if (error) throw error
+      setAdminEvaluatorId(data.id)
+    } catch (error: any) {
+      console.error("Error fetching admin evaluator ID:", error)
+      toast({
+        title: "관리자 ID 로드 실패",
+        description: "세션 생성을 위해 관리자 ID를 가져올 수 없습니다. evaluators 테이블을 확인해주세요.",
+        variant: "destructive",
+      })
+    }
+  }
 
   const fetchAudioFiles = async () => {
     try {
@@ -166,12 +184,20 @@ export function AdminSessionManager() {
       })
       return
     }
+    if (!adminEvaluatorId) {
+      toast({
+        title: "오류",
+        description: "관리자 ID를 가져올 수 없습니다. 잠시 후 다시 시도해주세요.",
+        variant: "destructive",
+      })
+      return
+    }
 
     try {
       const { error } = await supabase.from("evaluation_sessions").insert({
         title,
         audio_url: selectedAudioUrl,
-        created_by: "admin-id", // 실제로는 현재 사용자 ID
+        created_by: adminEvaluatorId, // 실제 관리자 ID 사용
       })
 
       if (error) throw error
@@ -336,7 +362,11 @@ export function AdminSessionManager() {
             </Select>
           </div>
 
-          <Button onClick={handleCreateSession} className="w-full" disabled={!title || !selectedAudioUrl}>
+          <Button
+            onClick={handleCreateSession}
+            className="w-full"
+            disabled={!title || !selectedAudioUrl || !adminEvaluatorId}
+          >
             세션 생성
           </Button>
         </CardContent>
