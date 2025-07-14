@@ -1,7 +1,7 @@
 "use client"
 
 import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Slider } from "@/components/ui/slider"
 
 interface ScoreInputProps {
   label: string
@@ -11,28 +11,22 @@ interface ScoreInputProps {
 }
 
 export function ScoreInput({ label, maxScore, value, onChange }: ScoreInputProps) {
-  const options = []
-  for (let i = 0; i <= maxScore * 2; i++) {
-    options.push(i / 2)
-  }
+  const step = 0.5
+  const min = 0
 
   return (
     <div className="space-y-2">
       <Label className="text-sm font-medium">
-        {label} (최대 {maxScore}점)
+        {label} ({value.toFixed(1)} / {maxScore}점)
       </Label>
-      <Select value={value.toString()} onValueChange={(v) => onChange(Number.parseFloat(v))}>
-        <SelectTrigger>
-          <SelectValue placeholder="점수 선택" />
-        </SelectTrigger>
-        <SelectContent>
-          {options.map((score) => (
-            <SelectItem key={score} value={score.toString()}>
-              {score}점
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <Slider
+        min={min}
+        max={maxScore}
+        step={step}
+        value={[value]}
+        onValueChange={(v) => onChange(v[0])}
+        className="w-full"
+      />
     </div>
   )
 }
