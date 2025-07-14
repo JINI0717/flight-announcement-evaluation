@@ -45,6 +45,7 @@ export type Database = {
           language: "korean" | "english"
           scores: any
           total_score: number
+          comments: string | null // comments 필드 추가
           submitted_at: string
         }
       }

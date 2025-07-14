@@ -13,7 +13,14 @@ interface EvaluationData {
   language: "korean" | "english"
   scores: Record<string, Record<string, number>>
   total_score: number
+  comments: string | null // 코멘트 필드 추가
   submitted_at: string
+}
+
+// 언어별 카드 배경색 정의 (AdminDashboard에서도 사용)
+const languageColors = {
+  korean: "bg-blue-50 border-blue-200",
+  english: "bg-red-50 border-red-200",
 }
 
 export function AdminDashboard({ sessionId }: { sessionId: string }) {
@@ -52,6 +59,7 @@ export function AdminDashboard({ sessionId }: { sessionId: string }) {
         language: item.language,
         scores: item.scores,
         total_score: item.total_score,
+        comments: item.comments, // 코멘트 데이터 포함
         submitted_at: item.submitted_at,
       }))
 
@@ -214,7 +222,7 @@ export function AdminDashboard({ sessionId }: { sessionId: string }) {
             {evaluations
               .filter((e) => e.language === "korean")
               .map((evaluation) => (
-                <Card key={evaluation.id}>
+                <Card key={evaluation.id} className={`border-2 ${languageColors.korean}`}>
                   <CardHeader>
                     <div className="flex justify-between items-center">
                       <CardTitle className="text-lg">{evaluation.evaluator_name}</CardTitle>
@@ -237,6 +245,12 @@ export function AdminDashboard({ sessionId }: { sessionId: string }) {
                         </div>
                       ))}
                     </div>
+                    {evaluation.comments && (
+                      <div className="mt-4 p-3 bg-blue-100 rounded text-sm">
+                        <div className="font-medium mb-1">코멘트:</div>
+                        <p className="whitespace-pre-wrap">{evaluation.comments}</p>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               ))}
@@ -248,7 +262,7 @@ export function AdminDashboard({ sessionId }: { sessionId: string }) {
             {evaluations
               .filter((e) => e.language === "english")
               .map((evaluation) => (
-                <Card key={evaluation.id}>
+                <Card key={evaluation.id} className={`border-2 ${languageColors.english}`}>
                   <CardHeader>
                     <div className="flex justify-between items-center">
                       <CardTitle className="text-lg">{evaluation.evaluator_name}</CardTitle>
@@ -271,6 +285,12 @@ export function AdminDashboard({ sessionId }: { sessionId: string }) {
                         </div>
                       ))}
                     </div>
+                    {evaluation.comments && (
+                      <div className="mt-4 p-3 bg-red-100 rounded text-sm">
+                        <div className="font-medium mb-1">코멘트:</div>
+                        <p className="whitespace-pre-wrap">{evaluation.comments}</p>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               ))}
