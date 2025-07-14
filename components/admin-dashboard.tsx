@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { supabase } from "@/lib/supabase"
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList } from "recharts"
 
 interface EvaluationData {
   id: string
@@ -187,9 +187,15 @@ export function AdminDashboard({ sessionId }: { sessionId: string }) {
                   <XAxis dataKey="category" />
                   <YAxis />
                   <Tooltip />
-                  <Bar dataKey="average" fill="#8884d8" name="평균" />
-                  <Bar dataKey="min" fill="#82ca9d" name="최저" />
-                  <Bar dataKey="max" fill="#ffc658" name="최고" />
+                  <Bar dataKey="average" fill="#8884d8" name="평균">
+                    <LabelList dataKey="average" position="top" formatter={(value: number) => value.toFixed(1)} />
+                  </Bar>
+                  <Bar dataKey="min" fill="#82ca9d" name="최저">
+                    <LabelList dataKey="min" position="top" formatter={(value: number) => value.toFixed(1)} />
+                  </Bar>
+                  <Bar dataKey="max" fill="#ffc658" name="최고">
+                    <LabelList dataKey="max" position="top" formatter={(value: number) => value.toFixed(1)} />
+                  </Bar>
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>
@@ -208,9 +214,15 @@ export function AdminDashboard({ sessionId }: { sessionId: string }) {
                   <XAxis dataKey="category" />
                   <YAxis />
                   <Tooltip />
-                  <Bar dataKey="average" fill="#8884d8" name="평균" />
-                  <Bar dataKey="min" fill="#82ca9d" name="최저" />
-                  <Bar dataKey="max" fill="#ffc658" name="최고" />
+                  <Bar dataKey="average" fill="#8884d8" name="평균">
+                    <LabelList dataKey="average" position="top" formatter={(value: number) => value.toFixed(1)} />
+                  </Bar>
+                  <Bar dataKey="min" fill="#82ca9d" name="최저">
+                    <LabelList dataKey="min" position="top" formatter={(value: number) => value.toFixed(1)} />
+                  </Bar>
+                  <Bar dataKey="max" fill="#ffc658" name="최고">
+                    <LabelList dataKey="max" position="top" formatter={(value: number) => value.toFixed(1)} />
+                  </Bar>
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>

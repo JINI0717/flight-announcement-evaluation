@@ -12,6 +12,7 @@ import { supabase } from "@/lib/supabase"
 import { useToast } from "@/hooks/use-toast"
 import { Textarea } from "@/components/ui/textarea" // Textarea 임포트
 import { Label } from "@/components/ui/label"
+import { Check } from "lucide-react" // 체크 아이콘 임포트
 
 interface EvaluationFormProps {
   sessionId: string
@@ -36,6 +37,8 @@ export function EvaluationForm({ sessionId, evaluatorId }: EvaluationFormProps) 
   const [englishComment, setEnglishComment] = useState("") // 영어 코멘트 상태
   const [isSubmitting, setIsSubmitting] = useState(false)
   const { toast } = useToast()
+  const [koreanSubmitted, setKoreanSubmitted] = useState(false)
+  const [englishSubmitted, setEnglishSubmitted] = useState(false)
 
   const updateKoreanScore = (category: string, item: string, score: number) => {
     setKoreanScores((prev) => ({
@@ -105,6 +108,11 @@ export function EvaluationForm({ sessionId, evaluatorId }: EvaluationFormProps) 
         description: `${language === "korean" ? "한국어" : "영어"} 평가가 성공적으로 제출되었습니다.`,
         duration: 3000, // 3초 동안 표시
       })
+      if (language === "korean") {
+        setKoreanSubmitted(true)
+      } else {
+        setEnglishSubmitted(true)
+      }
       // 제출 후 페이지에 남아있도록 별도의 리다이렉션 없음
     } catch (error) {
       toast({
@@ -175,8 +183,25 @@ export function EvaluationForm({ sessionId, evaluatorId }: EvaluationFormProps) 
         <div className="text-lg font-semibold mb-2 sm:mb-0">
           총점: {calculateOverallTotal(scores, criteria).toFixed(1)} / 100점
         </div>
-        <Button onClick={() => submitEvaluation(language)} disabled={isSubmitting} size="lg">
-          {isSubmitting ? "제출 중..." : "평가 제출"}
+        <Button
+          onClick={() => submitEvaluation(language)}
+          disabled={isSubmitting || (language === "korean" ? koreanSubmitted : englishSubmitted)}
+          size="lg"
+          className={
+            (language === "korean" ? koreanSubmitted : englishSubmitted)
+              ? "bg-green-500 hover:bg-green-600 text-white"
+              : ""
+          }
+        >
+          {isSubmitting ? (
+            "제출 중..."
+          ) : (language === "korean" ? koreanSubmitted : englishSubmitted) ? (
+            <>
+              <Check className="w-4 h-4 mr-2" /> 평가 완료
+            </>
+          ) : (
+            "평가 제출"
+          )}
         </Button>
       </div>
     </div>
